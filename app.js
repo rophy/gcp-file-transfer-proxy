@@ -44,6 +44,13 @@ app.get('/download', (req, res) => {
 
   console.log(url);
 
+  if (!cache.has(url)) {
+    return res.status(404).send({
+      status: 'error',
+      message: 'url does not exist or has been expired'
+    });
+  }
+
   return axios({
     method: 'get',
     url: url,
