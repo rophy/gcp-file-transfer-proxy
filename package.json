@@ -1,0 +1,14 @@
+{
+  "name": "gcp-file-transfer-proxy",
+  "version": "1.0.0",
+  "description": "Demo code showing how to use google pub/sub and cloud storage to implement a file transfer proxy.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "Apache 2.0",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
