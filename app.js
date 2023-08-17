@@ -36,24 +36,24 @@ app.listen(config.port, () => {
 });
 
 app.get('/download', (req, res) => {
-  const url = req.query.url;
-  if (!url) return res.status(400).send({
+  const { signed_url } = req.query;
+  if (!signed_url) return res.status(400).send({
     status: 'error',
-    message: 'missing required query "url"'
+    message: 'missing required query "signed_url"'
   });
 
-  console.log(url);
+  console.log(signed_url);
 
-  if (!cache.has(url)) {
+  if (!cache.has(signed_url)) {
     return res.status(404).send({
       status: 'error',
-      message: 'url does not exist or has been expired'
+      message: 'signed_url does not exist or has been expired'
     });
   }
 
   return axios({
     method: 'get',
-    url: url,
+    url: signed_url,
     validateStatus: (status) => true,
     responseType: 'stream',
   })
