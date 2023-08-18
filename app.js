@@ -2,11 +2,10 @@ const axios = require('axios');
 const express = require('express');
 const { PubSub } = require('@google-cloud/pubsub');
 const { Storage } = require('@google-cloud/storage');
-const NodeCache = require( "node-cache" );
 
-const config = require('./config');
+const config = require('./lib/config');
+const cache = require('./lib/url-cache');
 
-const cache = new NodeCache( { stdTTL: config.retentionSeconds } );
 
 const app = express();
 
@@ -21,7 +20,7 @@ function startSubscription() {
   subscription.on('message', async (message) => {
     try {
       const { signed_url, webhook } = JSON.parse(message.data);
-      cache.set(signed_url, true);
+      cache.set(signed_url);
       console.log(signed_url, webhook);
       } catch (err) {
       console.error(err);
