@@ -34,20 +34,31 @@ app.listen(config.port, () => {
   startSubscription();
 });
 
+/**
+ * Wrapper for sending express responses.
+ */
+function respond(res, status, message) {
+  // Since this is a proxy for Cloud Storage, provide a way to distinguish proxy responses and upstream responses.
+  // Rule: if there are message, this is a DMZ-Proxy response; otherwise this is an upstream response.
+
+  res.status(status);
+  if (message) {
+    res.set('X-DMZ-Proxy-Status', status.toString());
+    res.send({ status, message });
+  }
+
+}
+
 app.get('/download', (req, res) => {
   const { signed_url } = req.query;
-  if (!signed_url) return res.status(400).send({
-    status: 'error',
-    message: 'missing required query "signed_url"'
-  });
+  if (!signed_url) {
+    return respond(res, 400, 'missing required query "signed_url".');
+  }
 
   console.log(signed_url);
 
   if (!cache.has(signed_url)) {
-    return res.status(404).send({
-      status: 'error',
-      message: 'signed_url does not exist or has been expired'
-    });
+    return respond(res, 404, 'signed_url does not exist or has been expired.');
   }
 
   return axios({
@@ -57,15 +68,12 @@ app.get('/download', (req, res) => {
     responseType: 'stream',
   })
   .then(resp => {
-    res.status(resp.status);
+    respond(res, resp.status);
     resp.data.pipe(res);
   })
   .catch(err => {
     console.error(err);
-    res.status(500).send({
-      status: 'error',
-      message: 'unkonwn error'
-    });
+    respond(res, 500, 'unknown error');
   });
 
 });
