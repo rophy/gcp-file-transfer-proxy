@@ -1,8 +1,25 @@
 version: '3'
 services:
+  gcp:
+    image: gcr.io/google.com/cloudsdktool/google-cloud-cli:443.0.0-emulators
+    # command: "gcloud beta emulators pubsub start --project=ftp-test"
+    command: [ "gcloud", "beta", "emulators", "pubsub", "start", "--host-port=0.0.0.0:8085"]
+    tty: true
+    environment:
+      PUBSUB_PROJECT_ID: "ftp-test"
+    ports:
+      - 8085:8085
   app:
     image: gcp-file-transfer-proxy:latest
     build: .
+    environment:
+      PUBSUB_PROJECT_ID: "ftp-test"
+      PUBSUB_EMULATOR_HOST: "gcp:8085"
     ports:
       - 3000:3000
+    volumes:
+      - .:/app
     working_dir: /app
+    tty: true
+    entrypoint: bash
+    command: [ "-c", "while true; do sleep 30; done;"]

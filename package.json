@@ -4,7 +4,7 @@
   "description": "Demo code showing how to use google pub/sub and cloud storage to implement a file transfer proxy.",
   "main": "app.js",
   "scripts": {
-    "test": "GCP_SUBSCRIPTION_NAME=test-sub jest"
+    "test": "GCP_SUBSCRIPTION_NAME=projects/ftp-test/subscriptions/test-sub jest --silent=false"
   },
   "author": "",
   "license": "Apache 2.0",

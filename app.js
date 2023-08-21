@@ -4,5 +4,5 @@ const gcp = require('./lib/gcp');
 
 server.listen(config.port, () => {
   console.log(`Server is running on port ${config.port}`);
-  gcp.startSubscription();
+  gcp.startListening();
 });
